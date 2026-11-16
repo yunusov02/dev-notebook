@@ -1,17 +1,20 @@
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 
-from beyond_crud.auth.models import User
-from beyond_crud.auth.schemas import UserCreateModel, UserLoginModel
-from beyond_crud.auth.service import UserService
-from beyond_crud.db.main import get_session
-from beyond_crud.auth.utils import create_access_token, verify_password
+from beyond_crud.db.redis import add_jti_to_blocklist
 from fastapi import APIRouter, HTTPException
 from fastapi import status
 from fastapi.params import Depends
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from beyond_crud.auth.models import User
+from beyond_crud.auth.schemas import UserCreateModel, UserLoginModel
+from beyond_crud.auth.service import UserService
+from beyond_crud.db.main import get_session
+from beyond_crud.auth.utils import create_access_token, verify_password
+from beyond_crud.auth.dependencies import AccessTokenBearer, RefreshTokenBearer, get_current_user as gu
+from beyond_crud.auth.schemas import UserCreateModel
 
 auth_router = APIRouter()
 
@@ -66,4 +69,43 @@ async def login_users(
     
     return JSONResponse(content={"access_token": access_token, "refresh_token": refresh_token})
     
+
+
+
+@auth_router.get("/refresh_token")
+async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer)):
     
+    expiry_timestamp = token_details["exp"]
+
+    if datetime.fromtimestamp(expiry_timestamp) < datetime.now():
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={
+                "error": "This token is invalid or expired",
+                "resolution": "Please get a new token"
+            }
+        )
+    
+    return JSONResponse(content={"access_token": token_details["user"]})
+
+
+@auth_router.get("/logout")
+async def revoke_token(token_details: dict = Depends(AccessTokenBearer)):
+
+    jti = token_details.get('jti')
+    
+    await add_jti_to_blocklist(jti)
+    
+    return JSONResponse(content={"message": "Successfully logged out"}, status_code=status.HTTP_200_OK)
+
+
+
+
+
+@auth_router.get("me", response_model=UserCreateModel)
+async def get_current_user(
+    user=Depends(gu),
+):
+    return user
+
+
