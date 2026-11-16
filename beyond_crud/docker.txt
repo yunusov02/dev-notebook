@@ -1,0 +1,8 @@
+docker run -d \
+  --name bookly \
+  -e POSTGRES_PASSWORD=bookly \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_DB=bookly \
+  -p 15432:5432 \
+  -v postgres-data:/var/lib/postgresql \
+  postgres:18
