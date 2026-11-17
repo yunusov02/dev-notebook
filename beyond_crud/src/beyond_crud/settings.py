@@ -16,10 +16,10 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     
     REDIS_HOST: str = "localhost"
-    REDIS_PORT: str = "6379"
+    REDIS_PORT: int = 6379
     
     def get_database_url(self):
-        return f"postgresql://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        return f"postgresql+psycopg://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
     
     
 settings = Settings()

@@ -1,11 +1,9 @@
 from contextlib import asynccontextmanager
 
+from beyond_crud.auth.routes import auth_router
 from beyond_crud.books.routes import books_router
 from beyond_crud.db.main import init_db
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from typing import List
-from fastapi import status
+from fastapi import FastAPI
 
 
 
@@ -13,7 +11,7 @@ from fastapi import status
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     
-    print("Server is staring")
+    print("Server is starting")
     
     await init_db()
     yield 
@@ -29,7 +27,8 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-app.include_router(books_router, prefix="/api")
+app.include_router(books_router, prefix="/api", tags=["books"])
+app.include_router(auth_router, prefix="/api/auth", tags=["auth"])
 
 
 

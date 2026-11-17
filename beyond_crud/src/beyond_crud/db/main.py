@@ -1,6 +1,6 @@
 from typing import AsyncGenerator
 
-from sqlmodel import SQLModel, create_engine, text
+from sqlmodel import SQLModel, text
 
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, AsyncEngine, async_sessionmaker
 
@@ -26,6 +26,7 @@ async def init_db():
 
         
         from beyond_crud.books.models import Book
+        from beyond_crud.auth.models import User
                 
         await conn.run_sync(SQLModel.metadata.create_all)
 
