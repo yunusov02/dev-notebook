@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/beyond-crud.iml" filepath="$PROJECT_DIR$/.idea/beyond-crud.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/dev-notebook.iml" filepath="$PROJECT_DIR$/.idea/dev-notebook.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/orm.iml" filepath="$PROJECT_DIR$/.idea/orm.iml" />
+    </modules>
+  </component>
+</project>
